@@ -60,16 +60,11 @@ plt.scatter(sanne_daily_longitude, sanne_daily_latitude,alpha=0.3)
 
 plt.show()
 
-proj =ccrs.Mercator()
-dlat=dict()
-dlong=dict()
-for name in bird_list:
-    dlat[name]=birddata.loc[birddata["bird_name"]==name].latitude
-    dlong[name]=birddata.loc[birddata["bird_name"]==name].longitude
+proj =ccrs.AzimuthalEquidistant()
 
-plt.figure(figsize=(8,8))
+plt.figure(figsize=(6,8),dpi=75)
 ax = plt.axes(projection=proj)
-ax.set_extent((-25.0, 20.0, 52.0, 10.0))
+ax.set_extent((-35.0, 30.0, 62.0, 0.0))
 #ax.add_feature(cfeature.LAND)
 #ax.add_feature(cfeature.OCEAN)
 ax.add_feature(cfeature.COASTLINE)
@@ -77,6 +72,6 @@ ax.add_feature(cfeature.BORDERS, linestyle=":")
 for name in bird_list:
     ix = birddata ["bird_name"] == name
     x,y=birddata.longitude[ix],birddata.latitude[ix]
-    ax.plot(dlong[name],dlat[name],".",transform=ccrs.Geodetic(),label=name,alpha=0.1)
+    ax.plot(x,y,"",transform=ccrs.Geodetic(),label=name,alpha=0.8)
 plt.legend(loc="upper left")
 plt.show()
