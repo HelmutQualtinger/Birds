@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 birddata = pd.read_csv("https://courses.edx.org/asset-v1:HarvardX+PH526x+2T2019+type@asset+block@bird_tracking.csv", index_col=0)
 birddata.head()
+bird_list = set(birddata["bird_name"])
 
 # Convert birddata.date_time to the `pd.datetime` format.
 import datetime as dt
@@ -14,6 +15,7 @@ for i in range(len(birddata)):
 
 # Create a new column of day of observation
 birddata["date"] = ts 
+#print(birddata.loc[birddata["bird_name"]=="Eric"])
 
 # Use `groupby()` to group the data by bird and date.
 grouped_birdname = birddata.groupby(["bird_name", "date"])
@@ -61,24 +63,20 @@ plt.show()
 proj =ccrs.Mercator()
 dlat=dict()
 dlong=dict()
-dlat["Eric"]=eric_daily_latitude
-dlong["Eric"]=eric_daily_longitude
-dlat["Nico"]=nico_daily_latitude
-dlong["Nico"]=nico_daily_longitude
-dlat["Sanne"]=sanne_daily_latitude
-dlong["Sanne"]=sanne_daily_longitude
+for name in bird_list:
+    dlat[name]=birddata.loc[birddata["bird_name"]==name].latitude
+    dlong[name]=birddata.loc[birddata["bird_name"]==name].longitude
 
 plt.figure(figsize=(8,8))
 ax = plt.axes(projection=proj)
 ax.set_extent((-25.0, 20.0, 52.0, 10.0))
-ax.add_feature(cfeature.LAND)
-ax.add_feature(cfeature.OCEAN)
+#ax.add_feature(cfeature.LAND)
+#ax.add_feature(cfeature.OCEAN)
 ax.add_feature(cfeature.COASTLINE)
 ax.add_feature(cfeature.BORDERS, linestyle=":")
-bird_name = ["Eric","Sanne","Nico"] 
-for name in bird_name:
+for name in bird_list:
     ix = birddata ["bird_name"] == name
     x,y=birddata.longitude[ix],birddata.latitude[ix]
-    ax.plot(dlong[name],dlat[name],".",transform=ccrs.Geodetic(),label=name)
+    ax.plot(dlong[name],dlat[name],".",transform=ccrs.Geodetic(),label=name,alpha=0.1)
 plt.legend(loc="upper left")
 plt.show()
