@@ -14,8 +14,7 @@ for i in range(len(birddata)):
 
 
 # Create a new column of day of observation
-birddata["date"] = ts 
-#print(birddata.loc[birddata["bird_name"]=="Eric"])
+birddata["date"] = ts
 
 # Use `groupby()` to group the data by bird and date.
 grouped_birdname = birddata.groupby(["bird_name", "date"])
@@ -60,13 +59,13 @@ plt.scatter(sanne_daily_longitude, sanne_daily_latitude,alpha=0.3)
 
 plt.show()
 
-proj =ccrs.AzimuthalEquidistant()
+proj =ccrs.Mercator()
 
 plt.figure(figsize=(6,8),dpi=75)
 ax = plt.axes(projection=proj)
 ax.set_extent((-35.0, 30.0, 62.0, 0.0))
-#ax.add_feature(cfeature.LAND)
-#ax.add_feature(cfeature.OCEAN)
+ax.add_feature(cfeature.LAND)
+ax.add_feature(cfeature.OCEAN)
 ax.add_feature(cfeature.COASTLINE)
 ax.add_feature(cfeature.BORDERS, linestyle=":")
 for name in bird_list:
