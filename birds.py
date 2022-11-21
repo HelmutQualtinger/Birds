@@ -74,3 +74,33 @@ for name in bird_list:
     ax.plot(x,y,"",transform=ccrs.Geodetic(),label=name,alpha=0.8)
 plt.legend(loc="upper left")
 plt.show()
+
+from bokeh.plotting import figure, output_file, show
+from bokeh.tile_providers import CARTODBPOSITRON, WIKIMEDIA, get_provider
+from bokeh.io import output_file, show
+from bokeh.models import ColumnDataSource, GMapOptions
+from pyproj import Transformer
+
+
+TRAN_4326_TO_3857 = Transformer.from_crs("EPSG:4326", "EPSG:3857")
+
+def mytransform(lat, lon):
+  return TRAN_4326_TO_3857.transform(lat, lon)
+
+
+output_file("tile.html")
+
+tile_provider = get_provider(WIKIMEDIA)
+lat_M_low,lon_M_lo = TRAN_4326_TO_3857.transform(29.,-96.)
+lat_M_hi,lon_M_hi = TRAN_4326_TO_3857.transform(32,-99)
+# range bounds supplied in web mercator coordinates
+p = figure(x_range=(-10000000, -9500000), y_range=(3000000, 4000000),
+           x_axis_type="mercator", y_axis_type="mercator")
+p.add_tile(tile_provider)
+source = ColumnDataSource(
+    data=dict(lat=[ 3029000,  3020000,  3029000],
+              lon=[-9770000, -9774000, -9778000])
+)
+
+p.circle(x="lon", y="lat", size=25, fill_color="red", fill_alpha=1, source=source)
+show(p)
